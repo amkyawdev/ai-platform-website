@@ -1,39 +1,42 @@
 /**
- * AI API - AI Provider Integration
+ * AI API - AI Provider Integration via Cloudflare Worker
  * AmkyawDev AI Power Platform
  */
 
 class AIAPI {
     constructor() {
-        this.apiKeys = Storage.get(STORAGE_KEYS.apiKeys, {});
         this.cache = new Map();
         this.requestQueue = [];
         this.isProcessing = false;
+        this.workerUrl = WORKER_URL || 'https://amkyawdev.mysvm.workers.dev';
     }
 
     /**
      * Set API key for provider
      */
     setApiKey(provider, key) {
-        this.apiKeys[provider] = key;
-        Storage.set(STORAGE_KEYS.apiKeys, this.apiKeys);
+        // Store in localStorage for persistence
+        const keys = Storage.get(STORAGE_KEYS.apiKeys, {});
+        keys[provider] = key;
+        Storage.set(STORAGE_KEYS.apiKeys, keys);
     }
 
     /**
      * Get API key for provider
      */
     getApiKey(provider) {
-        return this.apiKeys[provider];
+        const keys = Storage.get(STORAGE_KEYS.apiKeys, {});
+        return keys[provider];
     }
 
     /**
-     * Make API request with retry logic
+     * Make API request via Cloudflare Worker
      */
-    async request(provider, endpoint, options = {}) {
-        const { method = 'POST', body, headers = {}, retries = APP_CONFIG.retry.maxAttempts } = options;
+    async request(endpoint, options = {}) {
+        const { method = 'POST', body, retries = APP_CONFIG.retry.maxAttempts } = options;
         
         // Check cache for GET requests
-        const cacheKey = `${provider}:${endpoint}:${JSON.stringify(body)}`;
+        const cacheKey = `${endpoint}:${JSON.stringify(body)}`;
         if (method === 'POST' && APP_CONFIG.features.caching) {
             const cached = this.cache.get(cacheKey);
             if (cached && Date.now() - cached.timestamp < 3600000) { // 1 hour cache
@@ -44,10 +47,9 @@ class AIAPI {
         let lastError;
         for (let attempt = 1; attempt <= retries; attempt++) {
             try {
-                const response = await this._makeRequest(provider, endpoint, {
+                const response = await this._makeRequest(endpoint, {
                     method,
-                    body,
-                    headers
+                    body
                 });
 
                 // Cache successful responses
@@ -74,17 +76,15 @@ class AIAPI {
     }
 
     /**
-     * Make the actual HTTP request
+     * Make the actual HTTP request to Cloudflare Worker
      */
-    async _makeRequest(provider, endpoint, options) {
-        const { method, body, headers } = options;
-        const baseUrl = API_CONFIG.providers[provider];
+    async _makeRequest(endpoint, options) {
+        const { method, body } = options;
         
         const config = {
             method,
             headers: {
-                'Content-Type': 'application/json',
-                ...headers
+                'Content-Type': 'application/json'
             }
         };
 
@@ -92,21 +92,11 @@ class AIAPI {
             config.body = JSON.stringify(body);
         }
 
-        // Add API key for OpenAI
-        if (provider === 'openai' && this.apiKeys.openai) {
-            config.headers['Authorization'] = `Bearer ${this.apiKeys.openai}`;
-        }
-
-        // Add API key for Anthropic
-        if (provider === 'anthropic' && this.apiKeys.anthropic) {
-            config.headers['x-api-key'] = this.apiKeys.anthropic;
-        }
-
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
 
         try {
-            const response = await fetch(`${baseUrl}${endpoint}`, {
+            const response = await fetch(`${this.workerUrl}${endpoint}`, {
                 ...config,
                 signal: controller.signal
             });
@@ -140,14 +130,13 @@ class AIAPI {
     }
 
     /**
-     * Chat completion
+     * Chat completion via Worker
      */
     async chat(messages, options = {}) {
         const { model = APP_CONFIG.defaults.model, temperature = APP_CONFIG.defaults.temperature, maxTokens = APP_CONFIG.defaults.maxTokens, stream = false } = options;
 
-        let provider = 'openai';
-        let endpoint = '/chat/completions';
-        let body = {
+        const body = {
+            action: 'chat',
             model,
             messages,
             temperature,
@@ -155,66 +144,26 @@ class AIAPI {
             stream
         };
 
-        // Handle different providers
-        if (model.startsWith('claude')) {
-            provider = 'anthropic';
-            endpoint = '/messages';
-            body = {
-                model: model.replace('claude-3-', 'claude-3-'),
-                messages: messages.map(m => ({
-                    role: m.role === 'assistant' ? 'assistant' : m.role,
-                    content: m.content
-                })),
-                max_tokens: maxTokens,
-                temperature
-            };
-        } else if (model.startsWith('llama')) {
-            provider = 'cohere';
-            endpoint = '/generate';
-            body = {
-                model,
-                prompt: messages.map(m => `${m.role}: ${m.content}`).join('\n'),
-                max_tokens: maxTokens,
-                temperature
-            };
-        }
-
         if (stream) {
-            return this._streamChat(provider, endpoint, body);
+            return this._streamChat(body);
         }
 
-        const result = await this.request(provider, endpoint, { body });
-        
-        if (provider === 'anthropic') {
-            return result.content[0].text;
-        }
-        
-        return result.choices[0].message.content;
+        const result = await this.request('/api/chat', { body });
+        return result.response || result.content || result.text;
     }
 
     /**
      * Stream chat completion
      */
-    async *_streamChat(provider, endpoint, body) {
-        const { method = 'POST', headers = {} } = {};
-        const baseUrl = API_CONFIG.providers[provider];
-        
-        const config = {
+    async *_streamChat(body) {
+        const response = await fetch(`${this.workerUrl}/api/chat/stream`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                ...headers
-            }
-        };
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
 
-        if (provider === 'openai' && this.apiKeys.openai) {
-            config.headers['Authorization'] = `Bearer ${this.apiKeys.openai}`;
-        }
-
-        body.stream = true;
-        config.body = JSON.stringify(body);
-
-        const response = await fetch(`${baseUrl}${endpoint}`, config);
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
 
@@ -236,7 +185,7 @@ class AIAPI {
 
                 try {
                     const parsed = JSON.parse(data);
-                    const content = parsed.choices?.[0]?.delta?.content || parsed.content || '';
+                    const content = parsed.token || parsed.content || parsed.delta || '';
                     if (content) yield content;
                 } catch (e) {
                     // Skip invalid JSON
@@ -246,122 +195,143 @@ class AIAPI {
     }
 
     /**
-     * Image generation (DALL-E)
+     * Image generation via Worker (DALL-E / Stable Diffusion)
      */
     async generateImage(prompt, options = {}) {
-        const { size = '1024x1024', quality = 'standard', n = 1 } = options;
+        const { size = '1024x1024', quality = 'standard', n = 1, model = 'dall-e-3' } = options;
 
         const body = {
+            action: 'image',
+            model,
             prompt,
             n,
             size,
             quality
         };
 
-        const result = await this.request('openai', '/images/generations', { body });
+        const result = await this.request('/api/image', { body });
         
-        return result.data.map(item => ({
-            url: item.url,
-            revisedPrompt: item.revised_prompt
-        }));
+        return result.images || result.data || [{
+            url: result.url || result.image_url,
+            revisedPrompt: result.revised_prompt || prompt
+        }];
     }
 
     /**
-     * Audio transcription
+     * Audio transcription via Worker (Whisper)
      */
     async transcribeAudio(audioFile, options = {}) {
         const { language = 'my', prompt = '' } = options;
 
         const formData = new FormData();
         formData.append('file', audioFile);
-        formData.append('model', 'whisper-1');
         formData.append('language', language);
         if (prompt) formData.append('prompt', prompt);
 
-        const response = await fetch(`${API_CONFIG.providers.openai}/audio/transcriptions`, {
+        const response = await fetch(`${this.workerUrl}/api/transcribe`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${this.apiKeys.openai}`
-            },
             body: formData
         });
 
         const result = await response.json();
-        return result.text;
+        return result.text || result.transcription;
     }
 
     /**
-     * Text to speech
+     * Text to speech via Worker
      */
     async textToSpeech(text, options = {}) {
         const { voice = 'alloy', model = 'tts-1', speed = 1.0 } = options;
 
         const body = {
+            action: 'tts',
             model,
             voice,
             input: text,
             speed
         };
 
-        const response = await fetch(`${API_CONFIG.providers.openai}/audio/speech`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${this.apiKeys.openai}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-
-        const blob = await response.blob();
-        return URL.createObjectURL(blob);
+        const result = await this.request('/api/tts', { body });
+        
+        // Return audio URL or blob
+        if (result.audio_url) {
+            return result.audio_url;
+        }
+        
+        // Return base64 audio
+        if (result.audio) {
+            const blob = this._base64ToBlob(result.audio, 'audio/mpeg');
+            return URL.createObjectURL(blob);
+        }
+        
+        throw new Error('No audio returned');
     }
 
     /**
-     * Translation
+     * Translation via Worker
      */
     async translate(text, targetLang, sourceLang = 'auto') {
-        const messages = [
-            { role: 'system', content: `You are a translator. Translate the following text to ${targetLang}.` },
-            { role: 'user', content: text }
-        ];
+        const body = {
+            action: 'translate',
+            text,
+            target_lang: targetLang,
+            source_lang: sourceLang
+        };
 
-        return this.chat(messages);
+        const result = await this.request('/api/translate', { body });
+        return result.translated_text || result.translation || result.text;
     }
 
     /**
-     * Sentiment analysis
+     * Sentiment analysis via Worker
      */
     async analyzeSentiment(text) {
-        const messages = [
-            { role: 'system', content: 'Analyze the sentiment of the following text. Return a JSON with "sentiment" (positive/negative/neutral), "score" (0-1), and "emotions" (array of emotions).' },
-            { role: 'user', content: text }
-        ];
+        const body = {
+            action: 'sentiment',
+            text
+        };
 
-        const result = await this.chat(messages);
+        const result = await this.request('/api/analyze', { body });
         
-        try {
-            return JSON.parse(result);
-        } catch {
-            return {
-                sentiment: 'neutral',
-                score: 0.5,
-                emotions: []
-            };
-        }
+        return result.sentiment || {
+            sentiment: result.label || 'neutral',
+            score: result.score || 0.5,
+            emotions: result.emotions || []
+        };
     }
 
     /**
-     * Summarization
+     * Summarization via Worker
      */
     async summarize(text, options = {}) {
         const { maxLength = 200, style = 'balanced' } = options;
         
-        const messages = [
-            { role: 'system', content: `Summarize the following text in approximately ${maxLength} words. Style: ${style}.` },
-            { role: 'user', content: text }
-        ];
+        const body = {
+            action: 'summarize',
+            text,
+            max_length: maxLength,
+            style
+        };
 
-        return this.chat(messages);
+        const result = await this.request('/api/summarize', { body });
+        return result.summary || result.summarized_text || result.text;
+    }
+
+    /**
+     * Video generation (if supported)
+     */
+    async generateVideo(prompt, options = {}) {
+        const { duration = 5, model = 'kling' } = options;
+
+        const body = {
+            action: 'video',
+            model,
+            prompt,
+            duration
+        };
+
+        const result = await this.request('/api/video', { body });
+        return result.video_url || result.url || result;
     }
 
     /**
@@ -376,6 +346,19 @@ class AIAPI {
      */
     getCacheSize() {
         return this.cache.size;
+    }
+
+    /**
+     * Helper: Convert base64 to Blob
+     */
+    _base64ToBlob(base64, mimeType) {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: mimeType });
     }
 }
 
