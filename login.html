@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ဝင်ရန် / Login - AmkyawDev</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="icon" href="assets/favicon.ico">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">🤖</span>
+                    <span class="logo-text">AmkyawDev</span>
+                </a>
+                <h1 data-i18n="auth.loginTitle">ဝင်ရန်</h1>
+                <p data-i18n="auth.loginDesc">အကောင့်ဝင်ပါ့မယ်။</p>
+            </div>
+
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="email" data-i18n="auth.email">အီးမေးလ်</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="အီးမေးလ်လိပ်စာ"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" data-i18n="auth.password">စကားဝှက်</label>
+                    <div class="password-input">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="စကားဝှက်"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="btn-icon toggle-password" title="စကားဝှက်ပြောင်းလဲရန်">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me">
+                        <span data-i18n="auth.rememberMe">မှတ်ထားပါ့မယ်။</span>
+                    </label>
+                    <a href="#" class="forgot-password" data-i18n="auth.forgotPassword">စကားဝှက်မေ့သလား</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" data-i18n="auth.loginBtn">
+                    ဝင်ရန်
+                </button>
+
+                <div class="divider">
+                    <span data-i18n="auth.or">သို့မဟုတ်</span>
+                </div>
+
+                <button type="button" id="google-login-btn" class="btn btn-social btn-block">
+                    <span class="social-icon">🔵</span>
+                    <span data-i18n="auth.googleLogin">Google ဖြင့်ဝင်ရန်</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p data-i18n="auth.noAccount">အကောင့်မရှိပါသလား?</p>
+                <a href="register.html" data-i18n="auth.signUp">အကောင့်ဖွင့်ရန်</a>
+            </div>
+        </div>
+
+        <div class="auth-features">
+            <h2 data-i18n="auth.featuresTitle">AmkyawDev အင်္ဂါရပ်များ</h2>
+            <ul>
+                <li>🇲🇲 <span data-i18n="auth.feature1">မြန်မာဘာသာစကားအထူးပံ့ပိုး</span></li>
+                <li>🤖 <span data-i18n="auth.feature2">အဆင့်မြင့် AI မော်ဒယ်များ</span></li>
+                <li>💬 <span data-i18n="auth.feature3">ချက်ခ်၊ ပါမောက္ခချက်၊ ဘာသာပြန်</span></li>
+                <li>🔒 <span data-i18n="auth.feature4">လုံခြုံပါဝင်သော အချက်အလက်များ</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="error-message" class="error-toast hidden">
+        <span class="error-icon">⚠️</span>
+        <span class="error-text"></span>
+    </div>
+
+    <script src="config/env.js"></script>
+    <script src="config/firebase.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/firebase_auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('login-form');
+            const passwordToggle = document.querySelector('.toggle-password');
+            const passwordInput = document.getElementById('password');
+
+            // Toggle password visibility
+            passwordToggle.addEventListener('click', () => {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = '...';
+
+                try {
+                    const result = await firebaseAuth.signInWithEmail(email, password);
+                    if (result.user) {
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (error) {
+                    showError(error.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'ဝင်ရန်';
+                }
+            });
+
+            // Google login
+            document.getElementById('google-login-btn').addEventListener('click', async () => {
+                try {
+                    const result = await firebaseAuth.signInWithGoogle();
+                    if (result.user) {
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (error) {
+                    showError(error.message);
+                }
+            });
+
+            function showError(message) {
+                const errorEl = document.getElementById('error-message');
+                errorEl.querySelector('.error-text').textContent = message;
+                errorEl.classList.remove('hidden');
+                setTimeout(() => errorEl.classList.add('hidden'), 5000);
+            }
+        });
+    </script>
+</body>
+</html>

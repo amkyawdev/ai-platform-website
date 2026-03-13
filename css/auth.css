@@ -1,0 +1,325 @@
+/* 
+ * auth.css - Authentication Styles for AmkyawDev
+ * Part of Fanda.css framework
+ */
+
+/* Auth Page Layout */
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--gradient-bg);
+    padding: var(--spacing-lg);
+}
+
+.auth-container {
+    display: flex;
+    gap: var(--spacing-3xl);
+    max-width: 1000px;
+    width: 100%;
+    animation: fadeIn 0.5s ease;
+}
+
+.auth-card {
+    flex: 1;
+    max-width: 450px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding: var(--spacing-2xl);
+}
+
+.auth-features {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+.auth-features h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.auth-features ul {
+    list-style: none;
+}
+
+.auth-features li {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast);
+}
+
+.auth-features li:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Auth Header */
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.auth-header .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    text-decoration: none;
+}
+
+.auth-header .logo-text {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+}
+
+.auth-header h1 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-sm);
+}
+
+.auth-header p {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+/* Auth Form */
+.auth-form {
+    margin-bottom: var(--spacing-lg);
+}
+
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input input {
+    padding-right: 50px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: var(--spacing-sm);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    font-size: var(--font-size-lg);
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-sm);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Divider */
+.divider {
+    position: relative;
+    text-align: center;
+    margin: var(--spacing-lg) 0;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.divider span {
+    position: relative;
+    background: var(--bg-primary);
+    padding: 0 var(--spacing-md);
+    color: var(--text-tertiary);
+    font-size: var(--font-size-sm);
+}
+
+/* Social Login */
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.btn-social:hover {
+    border-color: var(--text-tertiary);
+    background-color: var(--bg-secondary);
+}
+
+.social-icon {
+    font-size: var(--font-size-lg);
+}
+
+/* Auth Footer */
+.auth-footer {
+    text-align: center;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.auth-footer a {
+    font-weight: 600;
+}
+
+/* Error Toast */
+.error-toast {
+    background: var(--error-light);
+    border-left: 4px solid var(--error-color);
+}
+
+.error-icon {
+    font-size: var(--font-size-xl);
+}
+
+.error-text {
+    color: var(--error-color);
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+    }
+    
+    .auth-features {
+        display: none;
+    }
+    
+    .auth-card {
+        max-width: 100%;
+    }
+}
+
+/* Validation Styles */
+input.error,
+textarea.error,
+select.error {
+    border-color: var(--error-color);
+}
+
+input.error:focus,
+textarea.error:focus,
+select.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+}
+
+/* Loading State */
+.auth-form button[type="submit"]:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+/* Remember Me Checkbox */
+input[type="checkbox"]#remember-me {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+}
+
+/* Form Group Focus States */
+.form-group:focus-within label {
+    color: var(--primary-color);
+}
+
+/* Placeholder Animation */
+input::placeholder,
+textarea::placeholder {
+    transition: color var(--transition-fast);
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Icon Input */
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon .input-icon {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    font-size: var(--font-size-lg);
+}
+
+.input-with-icon input,
+.input-with-icon textarea {
+    padding-left: 45px;
+}
+
+/* Form Validation States */
+.form-group.valid input {
+    border-color: var(--success-color);
+}
+
+.form-group.invalid input {
+    border-color: var(--error-color);
+}
+
+/* Auto-fill Styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
