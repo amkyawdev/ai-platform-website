@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmkyawDev - AI Power Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="icon" href="assets/favicon.ico">
+</head>
+<body>
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-icon">🤖</span>
+                    <span class="logo-text">AmkyawDev</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" data-i18n="nav.home">ပင်မစာမျက်နှာ</a></li>
+                <li><a href="chat.html" data-i18n="nav.chat">ချက်ခ်</a></li>
+                <li><a href="dashboard.html" data-i18n="nav.dashboard">ဒက်ရှ်ဘုတ်</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="language-toggle" class="btn-icon" title="ဘာသာစကား ပြောင်းလဲရန်">
+                    <span class="lang-code">မြန်မာ</span>
+                </button>
+                <a href="login.html" class="btn btn-primary" data-i18n="nav.login">ဝင်ရန်</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">AmkyawDev</span>
+                    <br>
+                    <span data-i18n="hero.subtitle">AI Power Platform</span>
+                </h1>
+                <p class="hero-description" data-i18n="hero.description">
+                    မြန်မာဘာသာစကားအထူးပံ့ပိုးပါ့မယ်။ 
+                    မြန်မာလို မေးလျှင် မြန်မာလိုပြန်ဖြေပါ့မယ်။
+                </p>
+                <div class="hero-actions">
+                    <a href="chat.html" class="btn btn-primary btn-large">
+                        <span data-i18n="hero.startChat">စချက်ခ်လုပ်ရန်</span>
+                    </a>
+                    <a href="login.html" class="btn btn-secondary btn-large">
+                        <span data-i18n="hero.signUp">အကောင့်ဖွင့်ရန်</span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="ai-illustration">
+                    <div class="pulse-ring"></div>
+                    <div class="ai-core">
+                        <span class="ai-icon">🧠</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <h2 class="section-title" data-i18n="features.title">အင်္ဂါရပ်များ</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3 data-i18n="features.chat.title">စာသားထုတ်လုပ်ခြင်း</h3>
+                    <p data-i18n="features.chat.desc">မြန်မာလိုပါဝင်သော ဘာသာစကားများအားလုံးကို ထောက်ပံ့ပါ့မယ်။</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 data-i18n="features.image.title">ပုံဆွဲခြင်း</h3>
+                    <p data-i18n="features.image.desc">DALL-E နည်းပါးဖြင့် ပါမောက္ခချက်ပါ့မယ်။</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎙️</div>
+                    <h3 data-i18n="features.audio.title">အသံဖိုင်ပြောင်းခြင်း</h3>
+                    <p data-i18n="features.audio.desc">အသံဖိုင်များကို စာသားအဖြစ်ပြောင်းလဲပါ့မယ်။</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔊</div>
+                    <h3 data-i18n="features.tts.title">စာသားပြောင်းခြင်း</h3>
+                    <p data-i18n="features.tts.desc">စာသားများကို အသံဖိုင်အဖြစ်ပြောင်းလဲပါ့မယ်။</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3 data-i18n="features.translation.title">ဘာသာပြန်ခြင်း</h3>
+                    <p data-i18n="features.translation.desc">ဘာသာစကားများအားလုံးကို အလွယ်တကူပြန်ပါ့မယ်။</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 data-i18n="features.summary.title">အကျဉ်းချုပ်ခြင်း</h3>
+                    <p data-i18n="features.summary.desc">အရှည်ကြီးစာများကို အကျဉ်းချုပ်ပါ့မယ်။</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="models-section">
+            <h2 class="section-title" data-i18n="models.title">မော်ဒယ်များ</h2>
+            <div class="models-grid">
+                <div class="model-card">
+                    <span class="model-logo">🔵</span>
+                    <h3>GPT-4</h3>
+                    <p data-i18n="models.gpt4">အဆင့်မြင့်ဆုံးမော်ဒယ်</p>
+                </div>
+                <div class="model-card">
+                    <span class="model-logo">🟢</span>
+                    <h3>GPT-3.5</h3>
+                    <p data-i18n="models.gpt35">မြန်ဆန်ပါ့မယ်။</p>
+                </div>
+                <div class="model-card">
+                    <span class="model-logo">🟣</span>
+                    <h3>Claude</h3>
+                    <p data-i18n="models.claude">ပါးလွှာပါ့မယ်။</p>
+                </div>
+                <div class="model-card">
+                    <span class="model-logo">🟠</span>
+                    <h3>Llama</h3>
+                    <p data-i18n="models.llama">ဖွင့်ပါဝင်သော မော်ဒယ်</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 AmkyawDev. <span data-i18n="footer.rights">အားလုံးအခွင့်အရေးမှန်ကန်ပါ့မယ်။</span></p>
+        </div>
+    </footer>
+
+    <script src="config/firebase.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

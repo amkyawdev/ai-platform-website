@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AmkyawDev</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="icon" href="assets/favicon.ico">
+</head>
+<body class="dashboard-page">
+    <header class="main-header dashboard-header">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-icon">🤖</span>
+                    <span class="logo-text">AmkyawDev</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" data-i18n="nav.home">ပင်မစာမျက်နှာ</a></li>
+                <li><a href="chat.html" data-i18n="nav.chat">ချက်ခ်</a></li>
+                <li><a href="dashboard.html" class="active" data-i18n="nav.dashboard">ဒက်ရှ်ဘုတ်</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="language-toggle" class="btn-icon" title="ဘာသာစကား ပြောင်းလဲရန်">
+                    <span class="lang-code">မြန်မာ</span>
+                </button>
+                <div id="user-menu" class="user-menu">
+                    <button class="btn-icon user-avatar">
+                        <span class="avatar-letter">U</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="dashboard.html" data-i18n="nav.dashboard">ဒက်ရှ်ဘုတ်</a>
+                        <button id="logout-btn" data-i18n="nav.logout">ထွက်ရန်</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <aside class="dashboard-sidebar">
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-item active">
+                    <span class="icon">📊</span>
+                    <span data-i18n="dashboard.overview">အနှစ်ချုပ်</span>
+                </a>
+                <a href="#settings" class="nav-item">
+                    <span class="icon">⚙️</span>
+                    <span data-i18n="dashboard.settings">ဆက်တင်များ</span>
+                </a>
+                <a href="#api-keys" class="nav-item">
+                    <span class="icon">🔑</span>
+                    <span data-i18n="dashboard.apiKeys">API Key များ</span>
+                </a>
+                <a href="#history" class="nav-item">
+                    <span class="icon">📜</span>
+                    <span data-i18n="dashboard.history">မှတ်တမ်း</span>
+                </a>
+                <a href="#usage" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span data-i18n="dashboard.usage">အသုံးပါဝင်မှု</span>
+                </a>
+            </nav>
+        </aside>
+
+        <section class="dashboard-main">
+            <div id="overview" class="dashboard-section active">
+                <h1 data-i18n="dashboard.overviewTitle">ဒက်ရှ်ဘုတ်</h1>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-info">
+                            <h3 data-i18n="dashboard.totalChats">စုစုပါင်း ချက်ခ်</h3>
+                            <p class="stat-value" id="total-chats">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3 data-i18n="dashboard.totalTokens">စုစုပါင်း Token</h3>
+                            <p class="stat-value" id="total-tokens">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-info">
+                            <h3 data-i18n="dashboard.totalTime">စုစုပါင်း အချိန်</h3>
+                            <p class="stat-value" id="total-time">0 min</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🖼️</div>
+                        <div class="stat-info">
+                            <h3 data-i18n="dashboard.totalImages">စုစုပါင်း ပါမောက္ခချက်</h3>
+                            <p class="stat-value" id="total-images">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-chart">
+                    <h2 data-i18n="dashboard.activityChart">လုပ်ငန်းစာရင်း</h2>
+                    <div class="chart-placeholder">
+                        <div class="chart-bars">
+                            <div class="bar" style="height: 60%"><span>ဝ</span></div>
+                            <div class="bar" style="height: 80%"><span>တ</span></div>
+                            <div class="bar" style="height: 45%"><span>န</span></div>
+                            <div class="bar" style="height: 90%"><span>န</span></div>
+                            <div class="bar" style="height: 70%"><span>န</span></div>
+                            <div class="bar" style="height: 55%"><span>ပ</span></div>
+                            <div class="bar" style="height: 85%"><span>ဟ</span></div>
+                        </div>
+                        <div class="chart-labels">
+                            <span>တနင်္လာ</span>
+                            <span>အင်္ဂါ</span>
+                            <span>ဗုဒ္ဓဟူး</span>
+                            <span>ကြာသပတေး</span>
+                            <span>သောကြာ</span>
+                            <span>သနင်္ဂျင်း</span>
+                            <span>အားတင်္ဂျင်း</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="dashboard-section">
+                <h1 data-i18n="dashboard.settingsTitle">ဆက်တင်များ</h1>
+                
+                <div class="settings-groups">
+                    <div class="settings-card">
+                        <h2 data-i18n="settings.model">မော်ဒယ် ရွေးချယ်ခြင်း</h2>
+                        <div class="setting-row">
+                            <label data-i18n="settings.defaultModel">မူလမော်ဒယ်:</label>
+                            <select id="default-model">
+                                <option value="gpt-4">GPT-4</option>
+                                <option value="gpt-3.5-turbo" selected>GPT-3.5 Turbo</option>
+                                <option value="claude-3-opus">Claude 3 Opus</option>
+                                <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                                <option value="llama-3-70b">Llama 3 70B</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h2 data-i18n="settings.parameters">ပါရာမီတာများ</h2>
+                        <div class="setting-row">
+                            <label data-i18n="settings.temperature">Temperature:</label>
+                            <div class="range-container">
+                                <input type="range" id="default-temperature" min="0" max="2" step="0.1" value="0.7">
+                                <span id="temp-display">0.7</span>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.maxTokens">Max Tokens:</label>
+                            <input type="number" id="default-max-tokens" value="2048" min="1" max="32000">
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.topP">Top P:</label>
+                            <input type="range" id="default-top-p" min="0" max="1" step="0.1" value="1">
+                            <span id="top-p-display">1.0</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h2 data-i18n="settings.language">ဘာသာစကား</h2>
+                        <div class="setting-row">
+                            <label data-i18n="settings.preferredLanguage">နှစ်သက်တဲ့ ဘာသာစကား:</label>
+                            <select id="preferred-language">
+                                <option value="my" selected>မြန်မာ</option>
+                                <option value="en">English</option>
+                                <option value="zh">中文</option>
+                                <option value="ja">日本語</option>
+                                <option value="ko">한국어</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.interfaceLanguage">အင်တာဖိစ်စ် ဘာသာစကား:</label>
+                            <select id="interface-language">
+                                <option value="my" selected>မြန်မာ</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h2 data-i18n="settings.response">ပြန်လည်ဖော်ပြခြင်း</h2>
+                        <div class="setting-row">
+                            <label data-i18n="settings.responseStyle">ပြန်လည်ဖော်ပြပါ့မယ်:</label>
+                            <select id="default-response-style">
+                                <option value="concise" data-i18n="settings.style.concise">တိုတယ်</option>
+                                <option value="balanced" selected data-i18n="settings.style.balanced">ပါးလွှား</option>
+                                <option value="detailed" data-i18n="settings.style.detailed">အသေးစိတ်</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.streaming">Streaming:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="enable-streaming" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.caching">Caching:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="enable-caching" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h2 data-i18n="settings.customPrompt">စိတ်ကြိုက် Prompt</h2>
+                        <div class="setting-row">
+                            <textarea id="custom-prompt" placeholder="သင့်ရဲ့ စိတ်ကြိုက် prompt ရေးပါ့မယ်..." rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button id="save-settings" class="btn btn-primary" data-i18n="settings.save">
+                            သိမ်းပါ့မယ်။
+                        </button>
+                        <button id="reset-settings" class="btn btn-secondary" data-i18n="settings.reset">
+                            ပြန်လည်ထည့်ပါ့မယ်။
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="api-keys" class="dashboard-section">
+                <h1 data-i18n="dashboard.apiKeysTitle">API Key များ</h1>
+                
+                <div class="api-keys-card">
+                    <div class="api-key-row">
+                        <label>OpenAI API Key:</label>
+                        <div class="api-key-input">
+                            <input type="password" id="openai-api-key" placeholder="sk-...">
+                            <button class="btn-icon toggle-api-key" data-target="openai-api-key">
+                                <span>👁️</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="api-key-row">
+                        <label>Anthropic API Key:</label>
+                        <div class="api-key-input">
+                            <input type="password" id="anthropic-api-key" placeholder="sk-ant-...">
+                            <button class="btn-icon toggle-api-key" data-target="anthropic-api-key">
+                                <span>👁️</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="api-key-row">
+                        <label>Custom Endpoint:</label>
+                        <input type="url" id="custom-endpoint" placeholder="https://api.example.com/v1">
+                    </div>
+                    <div class="api-key-actions">
+                        <button id="save-api-keys" class="btn btn-primary" data-i18n="apiKeys.save">
+                            သိမ်းပါ့မယ်။
+                        </button>
+                        <button id="test-api-keys" class="btn btn-secondary" data-i18n="apiKeys.test">
+                            စမ်းသပ်ရန်
+                        </button>
+                    </div>
+                </div>
+
+                <div class="security-info">
+                    <h3>🔒 လုံခြုံရေး</h3>
+                    <ul>
+                        <li>API Keys များသည် သင့်ရဲ့ ဘရောင်ဇာမှာသာသိမ်းပါ့မယ်။</li>
+                        <li>Encryption ဖြင့်သိမ်းပါ့မယ်။</li>
+                        <li>Server သို့ မပါပါ့မယ်။</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="history" class="dashboard-section">
+                <h1 data-i18n="dashboard.historyTitle">မှတ်တမ်း</h1>
+                
+                <div class="history-filters">
+                    <input type="text" id="search-history" placeholder="ရှာဖွေရန်..." data-i18n-placeholder="dashboard.search">
+                    <select id="filter-type">
+                        <option value="all" data-i18n="dashboard.allTypes">အားလုံး</option>
+                        <option value="chat">ချက်ခ်</option>
+                        <option value="image">ပါမောက္ခချက်</option>
+                        <option value="transcribe">အသံဖိုင်</option>
+                        <option value="translate">ဘာသာပြန်</option>
+                    </select>
+                </div>
+
+                <div class="history-list" id="history-list">
+                    <div class="history-empty">
+                        <p data-i18n="dashboard.noHistory">မှတ်တမ်းမရှိပါ့မယ်။</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="usage" class="dashboard-section">
+                <h1 data-i18n="dashboard.usageTitle">အသုံးပါဝင်မှု</h1>
+                
+                <div class="usage-stats">
+                    <div class="usage-card">
+                        <h3 data-i18n="usage.thisMonth">ဤလ</h3>
+                        <div class="usage-details">
+                            <div class="usage-row">
+                                <span>Chat:</span>
+                                <span id="chat-usage">0 / 1000</span>
+                            </div>
+                            <div class="usage-row">
+                                <span>Images:</span>
+                                <span id="image-usage">0 / 100</span>
+                            </div>
+                            <div class="usage-row">
+                                <span>Transcription:</span>
+                                <span id="transcribe-usage">0 / 60 min</span>
+                            </div>
+                        </div>
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="config/env.js"></script>
+    <script src="config/firebase.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/firebase_auth.js"></script>
+    <script src="js/ui_controller.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
