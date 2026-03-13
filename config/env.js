@@ -3,16 +3,20 @@
  * AmkyawDev AI Power Platform
  */
 
+// Cloudflare Worker API URL
+const WORKER_URL = 'https://amkyawdev.mysvm.workers.dev';
+
 // API Configuration
 const API_CONFIG = {
-    // Backend API URL
-    apiUrl: 'http://localhost:3000/api',
+    // Cloudflare Worker API URL
+    workerUrl: WORKER_URL,
     
-    // AI Provider Endpoints
-    providers: {
-        openai: 'https://api.openai.com/v1',
-        anthropic: 'https://api.anthropic.com/v1',
-        cohere: 'https://api.cohere.ai/v1'
+    // API Keys (set these in your environment or Cloudflare Workers secrets)
+    apiKeys: {
+        gemini: '',    // GEMINI_API_KEY
+        openai: '',    // OPENAI_API_KEY
+        stability: '', // STABILITY_KEY
+        zai: ''       // ZAI_API_KEY
     },
     
     // Default timeout in ms
@@ -60,10 +64,12 @@ const APP_CONFIG = {
         'gpt-4-32k': 32768,
         'gpt-3.5-turbo': 4096,
         'gpt-3.5-turbo-16k': 16384,
+        'gemini-pro': 32768,
         'claude-3-opus': 200000,
         'claude-3-sonnet': 200000,
         'llama-3-70b': 8192,
-        'llama-3-8b': 8192
+        'llama-3-8b': 8192,
+        'stable-diffusion': 1024
     },
     
     // Pricing (per 1M tokens)
@@ -71,6 +77,7 @@ const APP_CONFIG = {
         input: {
             'gpt-4': 30.00,
             'gpt-3.5-turbo': 0.50,
+            'gemini-pro': 0.00,
             'claude-3-opus': 15.00,
             'claude-3-sonnet': 3.00,
             'llama-3-70b': 0.80
@@ -78,6 +85,7 @@ const APP_CONFIG = {
         output: {
             'gpt-4': 60.00,
             'gpt-3.5-turbo': 1.50,
+            'gemini-pro': 0.00,
             'claude-3-opus': 75.00,
             'claude-3-sonnet': 15.00,
             'llama-3-70b': 0.80
@@ -100,8 +108,9 @@ if (typeof window !== 'undefined') {
     window.API_CONFIG = API_CONFIG;
     window.APP_CONFIG = APP_CONFIG;
     window.STORAGE_KEYS = STORAGE_KEYS;
+    window.WORKER_URL = WORKER_URL;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { API_CONFIG, APP_CONFIG, STORAGE_KEYS };
+    module.exports = { API_CONFIG, APP_CONFIG, STORAGE_KEYS, WORKER_URL };
 }
